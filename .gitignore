@@ -1,0 +1,10 @@
+__pycache__/
+*.db
+*.sqlite3
+*.mbox
+*.log
+bodies/
+dashboard.html
+all_transactions*.csv
+monarch_live_pull.csv
+process_pdf_here/
