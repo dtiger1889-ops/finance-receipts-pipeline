@@ -76,7 +76,7 @@ Each script is idempotent. Specifics:
 - **Mbox path wrong** → `01` errors immediately. Check `MBOX_DIR`.
 - **Haiku CLI missing** → `02` errors at the LLM tier. Use `--no-llm` to ship without it (758 rows last run would stay un-extracted).
 - **Schwab trade alerts** counted as charges → `02b` blacklists `mail.schwab.com`. If a new non-receipt sender slips through, add it to `NON_RECEIPT_DOMAINS` there.
-- **Pre-2024-04 spending charts look thin** — that's by design until the Chase CC PDF backfill runs (see `Financial/CHECKPOINT.md` open thread on `csvconv`).
+- **Early spending charts look thin** — expected until older card statements are converted with `csvconv/` and loaded alongside the Monarch exports.
 
 ## Sharing this with someone else
 
@@ -84,7 +84,7 @@ What's portable: the scripts in this folder, `schema.sql`, this runbook.
 
 What's personal and must be replaced:
 - The hardcoded `MBOX_DIR` path in `01_parse_mbox.py`
-- The Monarch account list / preprocessing convention (`Account Name` prepended) in `Financial/CLAUDE.md`
+- Your Monarch exports: one CSV per account, each with an `Account Name` column added as column 1 holding that account's name (`03_load_reference.py` reads it to tell accounts apart)
 - Amazon path in `03_load_reference.py`
 - Schwab-specific blacklist in `02b_cleanup_extractions.py`
 - Template extractors in `extractors/` are merchant-specific (uber/lyft/capitalbikeshare/amazon) — useful as patterns, but they'll want their own.

@@ -1,6 +1,6 @@
 """LLM fallback for receipts that escape rule-based and template extractors.
 
-Mirrors the `claude -p` subprocess pattern from ../csvconv/process_bank_claude.py:217-257.
+Calls the Claude Code CLI in print mode (`claude -p`) as a subprocess.
 Batches ~15 receipts per call. Demands JSON-Lines output for stable parsing.
 """
 

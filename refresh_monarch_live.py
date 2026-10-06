@@ -1,18 +1,22 @@
 """Refresh the LIVE Monarch transaction cache in `Monarch Exports/live/`.
 
-Pulls recent transactions through the authenticated Monarch API session (the one
-the monarch-mcp-server holds — cookie login, lasts months) and writes them as a
-single CSV in the SAME column shape as the manual Monarch web exports, so
-`life-os/medtrack/medtrack.py match-monarch` (and any other consumer) can read
-manual exports and live pulls identically.
+Pulls recent transactions through the authenticated Monarch API session held by
+monarch-mcp-server (https://github.com/robcerda/monarch-mcp-server — required for
+this one script only; the rest of the pipeline runs on CSV exports) and writes them
+as a single CSV in the SAME column shape as the manual Monarch web exports, so any
+consumer that reads Monarch's export shape can read manual exports and live pulls
+identically.
 
 Design constraints:
 - Output goes to `Monarch Exports/live/` (a SUBFOLDER) so the receipts_pipeline's
   top-level CSV glob never sees it — the audited pipeline stays CSV-export-only.
 - One file, overwritten each run (`monarch_live_pull.csv`): no accumulation, no
   cross-run duplicates. Consumers dedupe against the manual exports.
-- MUST run under the monarch-mcp-server venv (has monarchmoney + the session):
+- MUST run under the monarch-mcp-server venv, after its one-time login setup
+  (that venv has the Monarch client library and the saved session):
     <monarch-mcp-server venv>/Scripts/python.exe refresh_monarch_live.py [--since YYYY-MM-DD]
+  If the server is cloned but not pip-installed into that venv, set MONARCH_MCP_SRC
+  to its `src/` folder so the import below can find it.
 """
 
 import argparse
@@ -23,9 +27,9 @@ import sys
 from datetime import date, timedelta
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SERVER_SRC = os.path.normpath(os.path.join(
-    HERE, "..", "mcp-extensions", "monarch-mcp-server", "src"))
-sys.path.insert(0, SERVER_SRC)
+SERVER_SRC = os.environ.get("MONARCH_MCP_SRC")  # optional; see docstring
+if SERVER_SRC:
+    sys.path.insert(0, SERVER_SRC)
 
 OUT_DIR = os.path.join(HERE, "Monarch Exports", "live")
 OUT_PATH = os.path.join(OUT_DIR, "monarch_live_pull.csv")
