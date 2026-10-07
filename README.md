@@ -1,5 +1,7 @@
 # finance-receipts-pipeline
 
+![The generated finance dashboard with entirely invented transactions, amounts, merchants and receipts](assets/example-dashboard.png)
+
 Techniques and working code for building a personal finance cross-check from three sources you already have: **email receipts** (Gmail Takeout mbox), **bank/card statements** (PDF), and a **budgeting app export** (Monarch Money CSVs). The end product is a local SQLite database that matches receipts to real transactions, plus a static HTML dashboard.
 
 Everything runs locally. No cloud services beyond optional LLM calls for the hard cases.
