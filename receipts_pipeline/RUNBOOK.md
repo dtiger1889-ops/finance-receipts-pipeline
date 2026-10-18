@@ -19,13 +19,13 @@ Turns a Gmail Takeout export (mbox files) + Monarch CSVs + Amazon Order History 
 
 ## Where to put the export
 
-`01_parse_mbox.py` reads from a hardcoded path:
+By default `01_parse_mbox.py` reads every `.mbox` file in this folder, inside the repo folder:
 
 ```
-Financial/<DATE> Gmail Financial Label Export/Mail/*.mbox
+Gmail Export/Mail/*.mbox
 ```
 
-For a new Takeout, **edit `MBOX_DIR` in `01_parse_mbox.py:36`** to point at the new dated folder. (Don't merge mboxes into the old folder — the date in the folder name is your only freshness marker.)
+To read a different folder, pass it: `python 01_parse_mbox.py --mbox-dir "<path to the export's Mail folder>"`. A good habit is one dated folder per Takeout, passed with `--mbox-dir`. (Don't merge mboxes into an old folder — the date in the folder name is your only freshness marker.)
 
 ## Run order
 
@@ -52,16 +52,16 @@ Each script is idempotent. Specifics:
 ## Incremental re-run (new Takeout, same Monarch/Amazon)
 
 1. Take a fresh Gmail Takeout (same labels), drop into a new dated folder.
-2. Update `MBOX_DIR` in `01_parse_mbox.py:36`.
+2. Point `01` at the new folder with `--mbox-dir`.
 3. Run `01` → `02` → `02b` → `04` → `05`. Skip `03` if Monarch/Amazon CSVs haven't changed.
 4. New emails get inserted; old Message-IDs are skipped. Only new receipts hit the LLM tier.
 
 ## Refreshing Monarch / Amazon (no new mbox)
 
-> **Note (2026-07-04):** live Monarch queries no longer need this — the Monarch MCP (`mcp__monarch__*`) reads the API directly. This re-export flow is still required to refresh `receipts.db`; the pipeline loads from CSVs only.
+The pipeline loads from CSVs only, so this re-export is what refreshes `receipts.db`.
 
-1. Re-export Monarch CSVs (one per account) into `Financial/Monarch Exports/` — keep `Account Name` prepended as column 1.
-2. Re-export Amazon Order History into `Financial/Prime Analysis/Your Orders/Your Amazon Orders/Order History.csv`.
+1. Re-export Monarch CSVs (one per account) into `Monarch Exports/` in the repo folder — keep `Account Name` prepended as column 1.
+2. Re-export Amazon Order History into `Prime Analysis/Your Orders/Your Amazon Orders/Order History.csv` in the repo folder.
 3. Run `03` → `04` → `05`.
 
 ## Cost & runtime expectations (last full run, ~4,877 receipts)

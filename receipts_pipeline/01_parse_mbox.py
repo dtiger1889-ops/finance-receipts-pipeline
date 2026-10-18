@@ -9,9 +9,9 @@ Idempotent: re-running with the same input produces the same DB state
 (INSERT OR IGNORE on message_id_hash primary key).
 
 Usage:
-    python 01_parse_mbox.py                  # all 19 mbox files
-    python 01_parse_mbox.py --only "Donation Receipts.mbox"  # one file
-    python 01_parse_mbox.py --only "Financial-Retirement.mbox" "CredRep.mbox"
+    python 01_parse_mbox.py                        # every .mbox in the export folder
+    python 01_parse_mbox.py --only "<label>.mbox"  # one or more files, by basename
+    python 01_parse_mbox.py --mbox-dir "<path to the export's Mail folder>"
 """
 
 from __future__ import annotations
@@ -33,7 +33,7 @@ from zoneinfo import ZoneInfo
 
 PIPELINE_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = PIPELINE_DIR.parent
-MBOX_DIR = PROJECT_DIR / "2026-04-25 Gmail Financial Label Export" / "Mail"
+MBOX_DIR = PROJECT_DIR / "Gmail Export" / "Mail"  # default; override with --mbox-dir
 DB_PATH = PIPELINE_DIR / "receipts.db"
 BODIES_DIR = PIPELINE_DIR / "bodies"
 SCHEMA_PATH = PIPELINE_DIR / "schema.sql"
@@ -278,7 +278,13 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", nargs="*", default=None,
                     help="Process only the specified mbox filenames (basenames).")
+    ap.add_argument("--mbox-dir", type=Path, default=None,
+                    help="Folder holding the Takeout .mbox files (default: <repo folder>/Gmail Export/Mail).")
     args = ap.parse_args()
+
+    global MBOX_DIR
+    if args.mbox_dir:
+        MBOX_DIR = args.mbox_dir.resolve()
 
     if not MBOX_DIR.is_dir():
         print(f"ERROR: mbox dir not found: {MBOX_DIR}", file=sys.stderr)

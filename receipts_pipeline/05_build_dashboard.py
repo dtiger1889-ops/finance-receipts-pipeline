@@ -341,9 +341,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <div class="footnote">
     <p>Source files (read-only — never modified by this pipeline):</p>
     <ul>
-      <li><code>Monarch Exports/</code> — 6 account CSVs</li>
+      <li><code>Monarch Exports/</code> — one CSV per account</li>
       <li><code>Prime Analysis/Your Orders/Your Amazon Orders/Order History.csv</code></li>
-      <li><code>2026-04-25 Gmail Financial Label Export/Mail/</code> — 19 mbox files</li>
+      <li><code>Gmail Export/Mail/</code> (or the <code>--mbox-dir</code> folder) — one mbox file per Gmail label</li>
     </ul>
     <p>Refresh: drop new exports, then run <code>python 03_load_reference.py &amp;&amp; python 04_build_matches.py &amp;&amp; python 05_build_dashboard.py</code>.</p>
   </div>
