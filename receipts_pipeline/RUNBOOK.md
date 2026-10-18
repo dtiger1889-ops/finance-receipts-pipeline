@@ -83,7 +83,7 @@ The pipeline loads from CSVs only, so this re-export is what refreshes `receipts
 What's portable: the scripts in this folder, `schema.sql`, this runbook.
 
 What's personal and must be replaced:
-- The hardcoded `MBOX_DIR` path in `01_parse_mbox.py`
+- Your Gmail Takeout export: put it in `Gmail Export/Mail/` or pass its folder with `--mbox-dir`
 - Your Monarch exports: one CSV per account, each with an `Account Name` column added as column 1 holding that account's name (`03_load_reference.py` reads it to tell accounts apart)
 - Amazon path in `03_load_reference.py`
 - Schwab-specific blacklist in `02b_cleanup_extractions.py`
