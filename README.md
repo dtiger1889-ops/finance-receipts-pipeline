@@ -6,6 +6,12 @@ Techniques and working code for building a personal finance cross-check from thr
 
 Everything runs locally. No cloud services beyond optional LLM calls for the hard cases.
 
+## Start here
+
+This is a set of Python scripts to configure and run, not an installable skill. Start with [the runbook](receipts_pipeline/RUNBOOK.md): it lists the Python dependencies, input folders and stage order. Use a small private copy of your exports first, run from `receipts_pipeline/`, and inspect the resulting `receipts.db` and `dashboard.html` before processing the full archive.
+
+The receipt extraction stage has an optional Claude CLI tier; `--no-llm` skips it so receipt bodies are not sent to that tier. Statement conversion has separate local and Claude-backed routes below. An agent can help configure the scripts if it can read files and run Python. Ask: "Read RUNBOOK.md, identify the inputs and dependencies I need, and propose a small local run with the LLM tier disabled. Do not read my real exports or call an external model until I approve." No claim is made that every agent can run the optional CLI integration.
+
 ## The pipeline (receipts_pipeline/)
 
 Five numbered stages, each a standalone script, documented end-to-end in [RUNBOOK.md](receipts_pipeline/RUNBOOK.md):
@@ -34,6 +40,10 @@ Drop PDFs in `csvconv/process_pdf_here/`, run, get a combined transactions CSV (
 ## Bring your own data
 
 The repo ships code only. Point it at your own Gmail Takeout, statement PDFs, and app exports; all outputs (`*.db`, `bodies/`, dashboards, CSVs) are gitignored so your data can't end up in a commit.
+
+## Help
+
+For setup questions or errors, [open an issue](https://github.com/dtiger1889-ops/finance-receipts-pipeline/issues) with the relevant versions and a redacted error description.
 
 ## License
 
